@@ -2,15 +2,20 @@ package com.example.binaya.json_schedule;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +23,14 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    DatabaseHelper myDB;
+
+    GetSchedule gd;
+
     JSONParser parser;
     ProgressDialog progressDialog;
     String Data;
     String URL = "https://binayachaudari.github.io/ScheduleFile/Schedule.json";
-
-
 
     String Subject;
     String Lecturer;
@@ -36,18 +43,28 @@ public class MainActivity extends AppCompatActivity {
 
     String version;
 
+    TextView display;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new GetSchedule().execute();
+
+        display = (TextView) findViewById(R.id.display);
+
+        myDB = new DatabaseHelper(this);
+
+        StringBuffer sb = new StringBuffer();
+
+
     }
 
 
     /**
      * Async task class to get JSON by making JSONParser call
      */
-    private class GetSchedule extends AsyncTask<String,Void,String>{
+    public class GetSchedule extends AsyncTask<String,Void,String>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -81,9 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         Year = eachObject.getString("year");
                         Sem = eachObject.getString("sem");
 
-                        Log.d(TAG, "doInBackground: " +Subject);
-                        Log.d(TAG, "doInBackground: " +Lecturer);
-                        Log.d(TAG, "doInBackground: " +Day);
+                        myDB.insertData(Subject, Lecturer, Day , Start, End, Dept, Year ,Sem);
 
                     }
                 } catch (JSONException e) {
@@ -101,8 +116,20 @@ public class MainActivity extends AppCompatActivity {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
 
+            StringBuffer sb = new StringBuffer();
+
+            Cursor result = myDB.DisplayData();
+            if (result!= null && result.getCount()>0){
+                while(result.moveToNext()){
+                    sb.append("Subject: "+result.getString(0)+"\n");
+                    sb.append("Lecturer: "+result.getString(1)+"\n");
+                    sb.append("Time: "+result.getString(3)+" - "+result.getString(4)+"\n");
+                }
+            }
+            display.setText(sb.toString());
         }
 
-
     }
+
+
 }
