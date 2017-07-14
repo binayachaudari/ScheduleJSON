@@ -24,7 +24,7 @@ public class JSONParser {
             connection.setRequestMethod("GET");
             connection.connect();
             int status = connection.getResponseCode();
-            Log.d(TAG, "getstatus" + status);
+//            Log.d(TAG, "getstatus: " + status);
 
             //InputStreamReader: it reads bytes and decodes them into characters using a specified charset.
             //BufferedReader: Reads text from a character-input stream, buffering characters so as to provide for the efficient reading of characters, arrays, and lines.
@@ -35,10 +35,10 @@ public class JSONParser {
                     String line;
                     while ((line = br.readLine()) != null) {
                         sb.append(line+"\n");
-                        Log.d(TAG, "getJson: "+ sb);
+//                        Log.d(TAG, "getJson: "+ sb);
                     }
                     br.close();
-                    Log.d(TAG, "getJson: "+sb.toString());
+//                    Log.d(TAG, "getJson: "+sb.toString());
                     return sb.toString();
             }
         }
