@@ -48,8 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     public void insertData(String Sub, String lec, String day, String start, String end, String dept, String year, String sem){
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DROP TABLE " +TABLE_NAME);
-        onCreate(db);
         ContentValues contentValues = new ContentValues();
         contentValues.put(SUBJECT, Sub);
         contentValues.put(LECTURER, lec);
@@ -64,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     public Cursor DisplayData(){
         SQLiteDatabase db = getReadableDatabase();
-        String Query = "SELECT * FROM " + TABLE_NAME +" WHERE DAY = 'Sunday' AND DEPARTMENT = 'CS' AND YEAR = '2nd' AND SEMESTER = '2nd'";
+        String Query = "SELECT * FROM " + TABLE_NAME +" WHERE DAY = 'Monday' AND DEPARTMENT = 'CS' AND YEAR = '3rd' AND SEMESTER = '2nd'";
         Cursor result = db.rawQuery(Query,null);
         return result;
     }
